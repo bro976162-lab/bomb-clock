@@ -1,29 +1,111 @@
+/* ================================
+   RESET
+================================ */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+
+/* ================================
+   ROOT
+================================ */
+
+:root {
+    --main-color: #00eaff;
+    --background-color: #000;
+}
+
+
+/* ================================
+   BODY
+================================ */
+
 body {
+    width: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
-    background:
-        radial-gradient(circle at center, #17202a 0%, #05070a 45%, #000 100%);
+    position: relative;
 
-    font-family: Arial, sans-serif;
     overflow: hidden;
 
+    background:
+        radial-gradient(
+            circle at center,
+            #17202a 0%,
+            #05070a 45%,
+            #000 100%
+        );
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color: white;
+
     --main-color: #00eaff;
+
+    padding:
+        env(safe-area-inset-top)
+        env(safe-area-inset-right)
+        env(safe-area-inset-bottom)
+        env(safe-area-inset-left);
 }
 
-/* Main clock */
+
+/* ================================
+   BACKGROUND GRID
+================================ */
+
+.background-grid {
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.12;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 234, 255, 0.15) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 234, 255, 0.15) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    mask-image:
+        radial-gradient(
+            circle,
+            black 20%,
+            transparent 80%
+        );
+}
+
+
+/* ================================
+   MAIN CLOCK
+================================ */
 
 .clock {
-    width: 380px;
-    height: 380px;
+    width: min(380px, 86vw);
+    height: min(380px, 86vw);
+
+    min-width: 260px;
+    min-height: 260px;
 
     position: relative;
 
@@ -34,197 +116,525 @@ body {
     border-radius: 50%;
 
     background:
-        radial-gradient(circle,
-        rgba(0, 234, 255, 0.12),
-        rgba(0, 0, 0, 0.9) 65%);
+        radial-gradient(
+            circle,
+            rgba(0, 234, 255, 0.12),
+            rgba(0, 0, 0, 0.94) 65%
+        );
 
     box-shadow:
         0 0 30px var(--main-color),
-        inset 0 0 40px rgba(255,255,255,0.05);
+        0 0 80px rgba(0, 0, 0, 0.8),
+        inset 0 0 40px rgba(255, 255, 255, 0.05);
 
-    transition: 1s;
+    transition:
+        box-shadow 1s ease,
+        transform 0.5s ease;
 
-    transform: perspective(800px) rotateX(8deg);
+    transform:
+        perspective(800px)
+        rotateX(8deg);
+
+    isolation: isolate;
 }
 
-/* Rings */
+
+/* ================================
+   CLOCK CENTER GLOW
+================================ */
+
+.clock::before {
+    content: "";
+
+    position: absolute;
+
+    width: 70%;
+    height: 70%;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            var(--main-color),
+            transparent 65%
+        );
+
+    opacity: 0.05;
+
+    filter: blur(25px);
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+
+/* ================================
+   RINGS
+================================ */
 
 .ring {
     position: absolute;
-    border-radius: 50%;
-    border: 2px solid var(--main-color);
 
-    transition: 1s;
+    border-radius: 50%;
+
+    border:
+        2px solid
+        var(--main-color);
+
+    transition:
+        border-color 1s ease,
+        opacity 1s ease;
+
+    pointer-events: none;
 }
 
+
+/* Ring 1 */
+
 .ring1 {
-    width: 350px;
-    height: 350px;
+    width: 92%;
+    height: 92%;
 
     border-left-color: transparent;
     border-right-color: transparent;
 
-    animation: rotate1 8s linear infinite;
+    animation:
+        rotate1 8s linear infinite;
 }
 
+
+/* Ring 2 */
+
 .ring2 {
-    width: 315px;
-    height: 315px;
+    width: 83%;
+    height: 83%;
 
     border-top-color: transparent;
     border-bottom-color: transparent;
 
-    animation: rotate2 6s linear infinite;
+    animation:
+        rotate2 6s linear infinite;
 }
 
+
+/* Ring 3 */
+
 .ring3 {
-    width: 285px;
-    height: 285px;
+    width: 75%;
+    height: 75%;
 
     border-style: dashed;
 
     opacity: 0.5;
 
-    animation: rotate1 15s linear infinite;
+    animation:
+        rotate1 15s linear infinite;
 }
 
-/* Clock text */
+
+/* ================================
+   CLOCK CONTENT
+================================ */
 
 .clock-content {
+    width: 90%;
+
     text-align: center;
+
     z-index: 10;
+
+    user-select: none;
 }
+
+
+/* ================================
+   DAY
+================================ */
 
 .day {
     color: var(--main-color);
 
-    font-size: 15px;
-    letter-spacing: 7px;
+    font-size:
+        clamp(11px, 3.5vw, 15px);
 
-    margin-bottom: 15px;
+    font-weight: 600;
 
-    text-shadow: 0 0 15px var(--main-color);
+    letter-spacing:
+        clamp(3px, 1.5vw, 7px);
+
+    margin-bottom:
+        clamp(10px, 3vw, 15px);
+
+    text-shadow:
+        0 0 15px var(--main-color);
+
+    transition:
+        color 1s ease,
+        text-shadow 1s ease;
 }
+
+
+/* ================================
+   TIME
+================================ */
 
 .time {
     color: white;
 
-    font-size: 48px;
+    font-size:
+        clamp(30px, 12vw, 48px);
+
     font-weight: bold;
 
-    letter-spacing: 4px;
+    letter-spacing:
+        clamp(2px, 1vw, 4px);
+
+    white-space: nowrap;
 
     text-shadow:
         0 0 10px var(--main-color),
         0 0 25px var(--main-color);
 
-    transition: 1s;
+    transition:
+        text-shadow 1s ease;
 }
+
+
+/* ================================
+   DATE
+================================ */
 
 .date {
     color: #aaa;
 
-    font-size: 13px;
-    letter-spacing: 4px;
+    font-size:
+        clamp(9px, 3vw, 13px);
 
-    margin-top: 15px;
+    letter-spacing:
+        clamp(2px, 1vw, 4px);
+
+    margin-top:
+        clamp(10px, 3vw, 15px);
+
+    white-space: nowrap;
 }
+
+
+/* ================================
+   LOCATION
+================================ */
 
 .location {
     color: var(--main-color);
 
-    font-size: 9px;
-    letter-spacing: 4px;
+    font-size:
+        clamp(7px, 2.3vw, 9px);
 
-    margin-top: 20px;
+    letter-spacing:
+        clamp(2px, 1vw, 4px);
+
+    margin-top:
+        clamp(12px, 4vw, 20px);
 
     opacity: 0.8;
+
+    transition:
+        color 1s ease;
 }
 
-/* Decorative dots */
+
+/* ================================
+   DECORATIVE DOTS
+================================ */
 
 .dot {
     position: absolute;
 
-    width: 8px;
-    height: 8px;
+    width:
+        clamp(5px, 2vw, 8px);
 
-    background: var(--main-color);
+    height:
+        clamp(5px, 2vw, 8px);
+
+    background:
+        var(--main-color);
 
     border-radius: 50%;
 
-    box-shadow: 0 0 15px var(--main-color);
+    box-shadow:
+        0 0 15px var(--main-color);
 
-    transition: 1s;
+    transition:
+        background 1s ease,
+        box-shadow 1s ease;
+
+    z-index: 5;
 }
+
+
+/* TOP */
 
 .dot1 {
-    top: 18px;
+    top: 4.7%;
     left: 50%;
+
+    transform:
+        translateX(-50%);
 }
+
+
+/* RIGHT */
 
 .dot2 {
-    right: 18px;
+    right: 4.7%;
     top: 50%;
+
+    transform:
+        translateY(-50%);
 }
+
+
+/* BOTTOM */
 
 .dot3 {
-    bottom: 18px;
+    bottom: 4.7%;
     left: 50%;
+
+    transform:
+        translateX(-50%);
 }
+
+
+/* LEFT */
 
 .dot4 {
-    left: 18px;
+    left: 4.7%;
     top: 50%;
+
+    transform:
+        translateY(-50%);
 }
 
-/* Animations */
+
+/* ================================
+   INSTALL BUTTON
+================================ */
+
+.install-btn {
+    position: fixed;
+
+    top:
+        calc(
+            18px +
+            env(safe-area-inset-top)
+        );
+
+    right:
+        calc(
+            18px +
+            env(safe-area-inset-right)
+        );
+
+    z-index: 100;
+
+    border:
+        1px solid
+        var(--main-color);
+
+    border-radius: 30px;
+
+    padding:
+        10px 16px;
+
+    background:
+        rgba(0, 0, 0, 0.7);
+
+    color:
+        var(--main-color);
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 15px
+        rgba(0, 234, 255, 0.25);
+
+    backdrop-filter:
+        blur(10px);
+
+    -webkit-backdrop-filter:
+        blur(10px);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.install-btn:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 0 25px
+        var(--main-color);
+}
+
+
+.install-btn:active {
+    transform:
+        scale(0.95);
+}
+
+
+/* ================================
+   APP STATUS
+================================ */
+
+.app-status {
+    position: fixed;
+
+    bottom:
+        calc(
+            15px +
+            env(safe-area-inset-bottom)
+        );
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    color:
+        var(--main-color);
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+    opacity: 0.45;
+
+    white-space: nowrap;
+
+    pointer-events: none;
+}
+
+
+/* ================================
+   ANIMATIONS
+================================ */
 
 @keyframes rotate1 {
+
     from {
-        transform: rotate(0deg);
+        transform:
+            rotate(0deg);
     }
 
     to {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
 }
+
 
 @keyframes rotate2 {
+
     from {
-        transform: rotate(360deg);
+        transform:
+            rotate(360deg);
     }
 
     to {
-        transform: rotate(0deg);
+        transform:
+            rotate(0deg);
     }
 }
 
-/* Mobile */
 
-@media (max-width: 500px) {
+/* ================================
+   SMALL PHONES
+================================ */
+
+@media (max-width: 360px) {
 
     .clock {
-        width: 320px;
-        height: 320px;
-    }
+        width: 82vw;
+        height: 82vw;
 
-    .ring1 {
-        width: 295px;
-        height: 295px;
-    }
-
-    .ring2 {
-        width: 265px;
-        height: 265px;
-    }
-
-    .ring3 {
-        width: 235px;
-        height: 235px;
+        min-width: 245px;
+        min-height: 245px;
     }
 
     .time {
-        font-size: 38px;
+        font-size: 29px;
+        letter-spacing: 1px;
+    }
+
+    .day {
+        letter-spacing: 3px;
+    }
+
+    .date {
+        letter-spacing: 1.5px;
+    }
+
+    .location {
+        letter-spacing: 2px;
+    }
+
+    .install-btn {
+        top: 12px;
+        right: 12px;
+
+        padding: 8px 12px;
+
+        font-size: 9px;
+    }
+}
+
+
+/* ================================
+   LANDSCAPE MOBILE
+================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+
+    .clock {
+        width: min(65vh, 380px);
+        height: min(65vh, 380px);
+    }
+
+    .install-btn {
+        top: 10px;
+        right: 10px;
+    }
+
+    .app-status {
+        display: none;
+    }
+}
+
+
+/* ================================
+   REDUCE MOTION
+================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ring {
+        animation: none;
+    }
+
+    .clock {
+        transition: none;
     }
 }
