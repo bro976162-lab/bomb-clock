@@ -1,20 +1,58 @@
+/* =========================================
+   ELEMENTS
+========================================= */
+
 const time = document.getElementById("time");
 const date = document.getElementById("date");
 const day = document.getElementById("day");
 
+const installBtn = document.getElementById("installBtn");
+const appStatus = document.getElementById("appStatus");
 
-// =========================
-// LIVE CLOCK
-// =========================
+
+/* =========================================
+   COLORS
+========================================= */
+
+const colors = [
+    "#00eaff",
+    "#8a2be2",
+    "#00ff88",
+    "#ff00aa",
+    "#ffb300",
+    "#ff3333"
+];
+
+let colorIndex = 0;
+
+
+/* =========================================
+   LIVE CLOCK
+========================================= */
 
 function updateClock() {
+
     const now = new Date();
 
-    let hours = String(now.getHours()).padStart(2, "0");
-    let minutes = String(now.getMinutes()).padStart(2, "0");
-    let seconds = String(now.getSeconds()).padStart(2, "0");
+    /* -------------------------
+       TIME
+    ------------------------- */
 
-    time.textContent = `${hours}:${minutes}:${seconds}`;
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    hours = String(hours).padStart(2, "0");
+    minutes = String(minutes).padStart(2, "0");
+    seconds = String(seconds).padStart(2, "0");
+
+    time.textContent =
+        `${hours}:${minutes}:${seconds}`;
+
+
+    /* -------------------------
+       DAY
+    ------------------------- */
 
     const days = [
         "SUNDAY",
@@ -26,7 +64,13 @@ function updateClock() {
         "SATURDAY"
     ];
 
-    day.textContent = days[now.getDay()];
+    day.textContent =
+        days[now.getDay()];
+
+
+    /* -------------------------
+       DATE
+    ------------------------- */
 
     const months = [
         "JANUARY",
@@ -49,256 +93,224 @@ function updateClock() {
         `${now.getFullYear()}`;
 }
 
-setInterval(updateClock, 1000);
-updateClock();
 
-
-// =========================
-// COLOUR CHANGING
-// =========================
-
-const colors = [
-    "#00eaff",
-    "#8a2be2",
-    "#00ff88",
-    "#ff00aa",
-    "#ffb300",
-    "#ff3333"
-];
-
-let colorIndex = 0;
+/* =========================================
+   CHANGE COLOR
+========================================= */
 
 function changeColor() {
+
     colorIndex++;
 
     if (colorIndex >= colors.length) {
         colorIndex = 0;
     }
 
+    const newColor =
+        colors[colorIndex];
+
     document.documentElement.style.setProperty(
         "--main-color",
-        colors[colorIndex]
+        newColor
     );
-}
 
-setInterval(changeColor, 4000);
-
-
-// =========================
-// VOICE ASSISTANT
-// =========================
-
-// Browser speech recognition
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-let recognition;
-
-if (SpeechRecognition) {
-
-    recognition = new SpeechRecognition();
-
-    recognition.lang = "hi-IN";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = function(event) {
-
-        const userText =
-            event.results[0][0].transcript.toLowerCase();
-
-        console.log("Tumne kaha:", userText);
-
-        understandQuestion(userText);
-    };
-
-    recognition.onerror = function(event) {
-        console.log("Voice error:", event.error);
-    };
-
-} else {
-
-    console.log("Speech Recognition browser me supported nahi hai.");
-
-}
-
-
-// =========================
-// QUESTION SAMJHNA
-// =========================
-
-function understandQuestion(question) {
-
-    // DATE
-    if (
-        question.includes("date") ||
-        question.includes("tarikh") ||
-        question.includes("तारीख") ||
-        question.includes("तारिख") ||
-        question.includes("aaj ki date") ||
-        question.includes("aaj kya date") ||
-        question.includes("aaj ki tarikh")
-    ) {
-
-        speak(getCurrentDate());
-        return;
-    }
-
-
-    // DAY
-    if (
-        question.includes("kaunsa din") ||
-        question.includes("kon sa din") ||
-        question.includes("aaj ka din") ||
-        question.includes("which day") ||
-        question.includes("day kya hai")
-    ) {
-
-        speak(getCurrentDay());
-        return;
-    }
-
-
-    // TIME
-    if (
-        question.includes("time") ||
-        question.includes("kitne baje") ||
-        question.includes("kitna baj") ||
-        question.includes("samay")
-    ) {
-
-        speak(getCurrentTime());
-        return;
-    }
-
-
-    // UNKNOWN QUESTION
-
-    speak(
-        "Sorry, abhi main sirf time, date aur day ke questions ka answer de sakti hoon."
-    );
-}
-
-
-// =========================
-// DATE ANSWER
-// =========================
-
-function getCurrentDate() {
-
-    const now = new Date();
-
-    const months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    ];
-
-    return `Aaj ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} hai.`;
-}
-
-
-// =========================
-// DAY ANSWER
-// =========================
-
-function getCurrentDay() {
-
-    const now = new Date();
-
-    const days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-    ];
-
-    return `Aaj ${days[now.getDay()]} hai.`;
-}
-
-
-// =========================
-// TIME ANSWER
-// =========================
-
-function getCurrentTime() {
-
-    const now = new Date();
-
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-
-    let period = hours >= 12 ? "PM" : "AM";
-
-    hours = hours % 12;
-
-    if (hours === 0) {
-        hours = 12;
-    }
-
-    return `Abhi time ${hours}:${String(minutes).padStart(2, "0")} ${period} hai.`;
-}
-
-
-// =========================
-// CLOCK KI VOICE
-// =========================
-
-function speak(text) {
-
-    window.speechSynthesis.cancel();
-
-    const voice = new SpeechSynthesisUtterance(text);
-
-    voice.lang = "hi-IN";
-    voice.rate = 0.95;
-    voice.pitch = 1;
-
-    window.speechSynthesis.speak(voice);
-
-    console.log("Clock:", text);
-}
-
-
-// =========================
-// MICROPHONE START
-// =========================
-
-function startListening() {
-
-    if (!recognition) {
-
-        alert(
-            "Tumhara browser voice recognition support nahi karta."
+    /* Change browser theme color */
+    const themeColor =
+        document.querySelector(
+            'meta[name="theme-color"]'
         );
 
-        return;
+    if (themeColor) {
+        themeColor.setAttribute(
+            "content",
+            newColor
+        );
     }
-
-    recognition.start();
 }
 
 
-// Keyboard shortcut:
-// M dabao = microphone start
+/* =========================================
+   PWA INSTALL
+========================================= */
 
-document.addEventListener("keydown", function(event) {
+let deferredInstallPrompt = null;
 
-    if (event.key.toLowerCase() === "m") {
-        startListening();
+
+/* Browser install prompt */
+
+window.addEventListener(
+    "beforeinstallprompt",
+    function (event) {
+
+        /* Stop browser from showing automatically */
+        event.preventDefault();
+
+        /* Save the event */
+        deferredInstallPrompt = event;
+
+        /* Show our button */
+        if (installBtn) {
+            installBtn.hidden = false;
+        }
+
+        console.log(
+            "PWA install available."
+        );
     }
+);
 
-});
+
+/* =========================================
+   INSTALL BUTTON CLICK
+========================================= */
+
+if (installBtn) {
+
+    installBtn.addEventListener(
+        "click",
+        async function () {
+
+            if (!deferredInstallPrompt) {
+
+                alert(
+                    "Install option abhi available nahi hai. Browser ke menu me 'Install App' ya 'Add to Home Screen' check karo."
+                );
+
+                return;
+            }
+
+            /* Show browser install dialog */
+
+            deferredInstallPrompt.prompt();
+
+            const result =
+                await deferredInstallPrompt.userChoice;
+
+            console.log(
+                "Install result:",
+                result.outcome
+            );
+
+            /* Clear prompt */
+
+            deferredInstallPrompt = null;
+
+            /* Hide button */
+
+            installBtn.hidden = true;
+        }
+    );
+}
+
+
+/* =========================================
+   APP INSTALLED
+========================================= */
+
+window.addEventListener(
+    "appinstalled",
+    function () {
+
+        console.log(
+            "Future Clock installed successfully."
+        );
+
+        deferredInstallPrompt = null;
+
+        if (installBtn) {
+            installBtn.hidden = true;
+        }
+
+        if (appStatus) {
+            appStatus.textContent =
+                "FUTURE CLOCK • INSTALLED";
+        }
+    }
+);
+
+
+/* =========================================
+   SERVICE WORKER
+========================================= */
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            navigator.serviceWorker
+                .register("./service-worker.js")
+                .then(function (registration) {
+
+                    console.log(
+                        "Service Worker registered:",
+                        registration.scope
+                    );
+
+                })
+                .catch(function (error) {
+
+                    console.error(
+                        "Service Worker registration failed:",
+                        error
+                    );
+
+                });
+        }
+    );
+}
+
+
+/* =========================================
+   PWA / APP MODE DETECTION
+========================================= */
+
+function checkAppMode() {
+
+    const isStandalone =
+        window.matchMedia(
+            "(display-mode: standalone)"
+        ).matches ||
+        window.navigator.standalone === true;
+
+    if (isStandalone) {
+
+        if (appStatus) {
+            appStatus.textContent =
+                "FUTURE CLOCK • APP MODE";
+        }
+
+        if (installBtn) {
+            installBtn.hidden = true;
+        }
+    }
+}
+
+
+/* =========================================
+   START CLOCK
+========================================= */
+
+updateClock();
+
+
+/* Update clock every second */
+
+setInterval(
+    updateClock,
+    1000
+);
+
+
+/* Change color every 4 seconds */
+
+setInterval(
+    changeColor,
+    4000
+);
+
+
+/* Check app mode */
+
+checkAppMode();
