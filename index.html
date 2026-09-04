@@ -1,91 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color" content="#00eaff">
+    <title>Future AI Clock</title>
 
-    <meta
-        name="description"
-        content="Future Clock - A futuristic digital clock"
-    >
-
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <title>Future Clock</title>
-
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- App icon -->
-    <link rel="icon" type="image/png" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- Background -->
-    <div class="background-grid"></div>
+    <main class="container">
 
-    <!-- Install App Button -->
-    <button id="installBtn" class="install-btn" hidden>
-        ⬇ INSTALL APP
-    </button>
+        <div class="clock">
 
-    <!-- Main Clock -->
-    <main class="clock">
+            <!-- Rotating rings -->
+            <div class="ring ring1"></div>
+            <div class="ring ring2"></div>
+            <div class="ring ring3"></div>
 
-        <!-- Outer rotating rings -->
-        <div class="ring ring1"></div>
-        <div class="ring ring2"></div>
-        <div class="ring ring3"></div>
+            <!-- Clock content -->
+            <div class="clock-content">
 
-        <!-- Clock content -->
-        <div class="clock-content">
+                <div class="day" id="day">
+                    FRIDAY
+                </div>
 
-            <div class="day" id="day">
-                FRIDAY
+                <div class="time" id="time">
+                    00:00:00
+                </div>
+
+                <div class="date" id="date">
+                    04 SEPTEMBER 2026
+                </div>
+
+                <div class="location">
+                    EARTH • INDIA • IST
+                </div>
+
             </div>
 
-            <div class="time" id="time">
-                00:00:00
-            </div>
+            <!-- Decorative dots -->
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div>
+            <div class="dot dot4"></div>
 
-            <div class="date" id="date">
-                04 SEPTEMBER 2026
-            </div>
+        </div>
 
-            <div class="location">
-                EARTH • INDIA
+
+        <!-- Voice section -->
+
+        <div class="voice-area">
+
+            <button id="micButton"
+                onclick="startListening()">
+
+                🎙️ TALK
+
+            </button>
+
+            <div id="status">
+                Tap TALK and speak
             </div>
 
         </div>
 
-        <!-- Decorative dots -->
-        <div class="dot dot1"></div>
-        <div class="dot dot2"></div>
-        <div class="dot dot3"></div>
-        <div class="dot dot4"></div>
-
     </main>
 
-    <!-- Small status -->
-    <div class="app-status" id="appStatus">
-        FUTURE CLOCK
-    </div>
 
-    <!-- JavaScript -->
     <script src="script.js"></script>
 
 </body>
+
 </html>
