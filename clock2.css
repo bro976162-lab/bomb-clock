@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        radial-gradient(circle at center, #17202a 0%, #05070a 45%, #000 100%);
+
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+
+    --main-color: #00eaff;
+}
+
+/* Main clock */
+
+.clock {
+    width: 380px;
+    height: 380px;
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+        rgba(0, 234, 255, 0.12),
+        rgba(0, 0, 0, 0.9) 65%);
+
+    box-shadow:
+        0 0 30px var(--main-color),
+        inset 0 0 40px rgba(255,255,255,0.05);
+
+    transition: 1s;
+
+    transform: perspective(800px) rotateX(8deg);
+}
+
+/* Rings */
+
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--main-color);
+
+    transition: 1s;
+}
+
+.ring1 {
+    width: 350px;
+    height: 350px;
+
+    border-left-color: transparent;
+    border-right-color: transparent;
+
+    animation: rotate1 8s linear infinite;
+}
+
+.ring2 {
+    width: 315px;
+    height: 315px;
+
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+
+    animation: rotate2 6s linear infinite;
+}
+
+.ring3 {
+    width: 285px;
+    height: 285px;
+
+    border-style: dashed;
+
+    opacity: 0.5;
+
+    animation: rotate1 15s linear infinite;
+}
+
+/* Clock text */
+
+.clock-content {
+    text-align: center;
+    z-index: 10;
+}
+
+.day {
+    color: var(--main-color);
+
+    font-size: 15px;
+    letter-spacing: 7px;
+
+    margin-bottom: 15px;
+
+    text-shadow: 0 0 15px var(--main-color);
+}
+
+.time {
+    color: white;
+
+    font-size: 48px;
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    text-shadow:
+        0 0 10px var(--main-color),
+        0 0 25px var(--main-color);
+
+    transition: 1s;
+}
+
+.date {
+    color: #aaa;
+
+    font-size: 13px;
+    letter-spacing: 4px;
+
+    margin-top: 15px;
+}
+
+.location {
+    color: var(--main-color);
+
+    font-size: 9px;
+    letter-spacing: 4px;
+
+    margin-top: 20px;
+
+    opacity: 0.8;
+}
+
+/* Decorative dots */
+
+.dot {
+    position: absolute;
+
+    width: 8px;
+    height: 8px;
+
+    background: var(--main-color);
+
+    border-radius: 50%;
+
+    box-shadow: 0 0 15px var(--main-color);
+
+    transition: 1s;
+}
+
+.dot1 {
+    top: 18px;
+    left: 50%;
+}
+
+.dot2 {
+    right: 18px;
+    top: 50%;
+}
+
+.dot3 {
+    bottom: 18px;
+    left: 50%;
+}
+
+.dot4 {
+    left: 18px;
+    top: 50%;
+}
+
+/* Animations */
+
+@keyframes rotate1 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate2 {
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 500px) {
+
+    .clock {
+        width: 320px;
+        height: 320px;
+    }
+
+    .ring1 {
+        width: 295px;
+        height: 295px;
+    }
+
+    .ring2 {
+        width: 265px;
+        height: 265px;
+    }
+
+    .ring3 {
+        width: 235px;
+        height: 235px;
+    }
+
+    .time {
+        font-size: 38px;
+    }
+}
