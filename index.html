@@ -2,14 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta name="theme-color" content="#00eaff">
+
+    <meta
+        name="description"
+        content="Future Clock - A futuristic digital clock"
+    >
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <title>Future Clock</title>
 
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- App icon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <div class="clock">
+    <!-- Background -->
+    <div class="background-grid"></div>
+
+    <!-- Install App Button -->
+    <button id="installBtn" class="install-btn" hidden>
+        ⬇ INSTALL APP
+    </button>
+
+    <!-- Main Clock -->
+    <main class="clock">
 
         <!-- Outer rotating rings -->
         <div class="ring ring1"></div>
@@ -19,10 +53,12 @@
         <!-- Clock content -->
         <div class="clock-content">
 
-            <div class="day" id="day">FRIDAY</div>
+            <div class="day" id="day">
+                FRIDAY
+            </div>
 
             <div class="time" id="time">
-                10:51:00
+                00:00:00
             </div>
 
             <div class="date" id="date">
@@ -35,14 +71,20 @@
 
         </div>
 
-        <!-- Small futuristic dots -->
+        <!-- Decorative dots -->
         <div class="dot dot1"></div>
         <div class="dot dot2"></div>
         <div class="dot dot3"></div>
         <div class="dot dot4"></div>
 
+    </main>
+
+    <!-- Small status -->
+    <div class="app-status" id="appStatus">
+        FUTURE CLOCK
     </div>
 
+    <!-- JavaScript -->
     <script src="script.js"></script>
 
 </body>
