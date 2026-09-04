@@ -1,416 +1,504 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+// ======================================
+// ELEMENTS
+// ======================================
+
+const time = document.getElementById("time");
+const date = document.getElementById("date");
+const day = document.getElementById("day");
+
+const micButton = document.getElementById("micButton");
+const statusText = document.getElementById("status");
+
+
+// ======================================
+// LIVE CLOCK
+// ======================================
+
+function updateClock() {
+
+    const now = new Date();
+
+    let hours = String(now.getHours()).padStart(2, "0");
+    let minutes = String(now.getMinutes()).padStart(2, "0");
+    let seconds = String(now.getSeconds()).padStart(2, "0");
+
+
+    time.textContent =
+        `${hours}:${minutes}:${seconds}`;
+
+
+    const days = [
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+    ];
+
+
+    day.textContent =
+        days[now.getDay()];
+
+
+    const months = [
+        "JANUARY",
+        "FEBRUARY",
+        "MARCH",
+        "APRIL",
+        "MAY",
+        "JUNE",
+        "JULY",
+        "AUGUST",
+        "SEPTEMBER",
+        "OCTOBER",
+        "NOVEMBER",
+        "DECEMBER"
+    ];
+
+
+    date.textContent =
+        `${String(now.getDate()).padStart(2, "0")} ` +
+        `${months[now.getMonth()]} ` +
+        `${now.getFullYear()}`;
 }
 
 
-:root {
-    --main-color: #00eaff;
+setInterval(updateClock, 1000);
+
+updateClock();
+
+
+// ======================================
+// AUTOMATIC COLOUR
+// ======================================
+
+const colors = [
+
+    "#00eaff",
+
+    "#8a2be2",
+
+    "#00ff88",
+
+    "#ff00aa",
+
+    "#ffb300",
+
+    "#ff3333"
+
+];
+
+
+let colorIndex = 0;
+
+
+function changeColor() {
+
+    colorIndex++;
+
+    if (colorIndex >= colors.length) {
+        colorIndex = 0;
+    }
+
+
+    document.documentElement.style.setProperty(
+        "--main-color",
+        colors[colorIndex]
+    );
 }
 
 
-body {
+setInterval(changeColor, 4000);
 
-    min-height: 100vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+// ======================================
+// VOICE RECOGNITION
+// ======================================
 
-    background:
-        radial-gradient(
-            circle at center,
-            #17202a 0%,
-            #070a0f 45%,
-            #000000 100%
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+let recognition = null;
+
+
+if (SpeechRecognition) {
+
+    recognition = new SpeechRecognition();
+
+    recognition.lang = "hi-IN";
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+
+    recognition.onstart = function () {
+
+        statusText.textContent =
+            "🎙️ Listening... bolo";
+
+        micButton.textContent =
+            "🔴 LISTENING";
+
+    };
+
+
+    recognition.onresult = function (event) {
+
+        const spokenText =
+            event.results[0][0].transcript
+                .toLowerCase()
+                .trim();
+
+
+        console.log(
+            "Tumne kaha:",
+            spokenText
         );
 
-    font-family: Arial, sans-serif;
 
-    overflow: hidden;
-
-    color: white;
-}
+        statusText.textContent =
+            "Tumne kaha: " + spokenText;
 
 
-/* Main container */
-
-.container {
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-}
+        understandQuestion(spokenText);
+    };
 
 
-/* CLOCK */
+    recognition.onerror = function (event) {
 
-.clock {
-
-    width: min(380px, 85vw);
-
-    aspect-ratio: 1 / 1;
-
-    position: relative;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(0, 234, 255, 0.10),
-            rgba(0, 0, 0, 0.95) 68%
+        console.log(
+            "Voice error:",
+            event.error
         );
 
-    box-shadow:
 
-        0 0 25px var(--main-color),
+        statusText.textContent =
+            "Voice error: " + event.error;
 
-        0 0 60px rgba(0, 0, 0, 0.8),
+        micButton.textContent =
+            "🎙️ TALK";
+    };
 
-        inset 0 0 35px rgba(255,255,255,0.04);
 
-    transition: 1s;
+    recognition.onend = function () {
 
-    transform:
-        perspective(800px)
-        rotateX(6deg);
+        micButton.textContent =
+            "🎙️ TALK";
+    };
+
 }
 
 
-/* Rings */
+// ======================================
+// START LISTENING
+// ======================================
 
-.ring {
+function startListening() {
 
-    position: absolute;
+    if (!recognition) {
 
-    border-radius: 50%;
+        statusText.textContent =
+            "Browser voice recognition support nahi karta.";
 
-    border: 2px solid var(--main-color);
-
-    transition: 1s;
-}
-
-
-.ring1 {
-
-    width: 92%;
-    height: 92%;
-
-    border-left-color: transparent;
-    border-right-color: transparent;
-
-    animation:
-        rotateClockwise
-        8s
-        linear
-        infinite;
-}
-
-
-.ring2 {
-
-    width: 82%;
-    height: 82%;
-
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-
-    animation:
-        rotateAnti
-        6s
-        linear
-        infinite;
-}
-
-
-.ring3 {
-
-    width: 74%;
-    height: 74%;
-
-    border-style: dashed;
-
-    opacity: 0.5;
-
-    animation:
-        rotateClockwise
-        15s
-        linear
-        infinite;
-}
-
-
-/* Clock content */
-
-.clock-content {
-
-    text-align: center;
-
-    z-index: 10;
-
-    width: 90%;
-}
-
-
-.day {
-
-    color: var(--main-color);
-
-    font-size: clamp(11px, 3vw, 15px);
-
-    letter-spacing: 6px;
-
-    margin-bottom: 12px;
-
-    text-shadow:
-        0 0 12px var(--main-color);
-}
-
-
-.time {
-
-    color: white;
-
-    font-size: clamp(32px, 10vw, 48px);
-
-    font-weight: bold;
-
-    letter-spacing: 3px;
-
-    white-space: nowrap;
-
-    text-shadow:
-
-        0 0 10px var(--main-color),
-
-        0 0 25px var(--main-color);
-
-    transition: 1s;
-}
-
-
-.date {
-
-    color: #bdbdbd;
-
-    font-size: clamp(9px, 2.5vw, 13px);
-
-    letter-spacing: 3px;
-
-    margin-top: 14px;
-}
-
-
-.location {
-
-    color: var(--main-color);
-
-    font-size: clamp(7px, 2vw, 9px);
-
-    letter-spacing: 3px;
-
-    margin-top: 18px;
-
-    opacity: 0.8;
-}
-
-
-/* Decorative dots */
-
-.dot {
-
-    position: absolute;
-
-    width: 8px;
-    height: 8px;
-
-    background: var(--main-color);
-
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 15px var(--main-color);
-
-    transition: 1s;
-}
-
-
-.dot1 {
-    top: 5%;
-    left: 50%;
-}
-
-
-.dot2 {
-    right: 5%;
-    top: 50%;
-}
-
-
-.dot3 {
-    bottom: 5%;
-    left: 50%;
-}
-
-
-.dot4 {
-    left: 5%;
-    top: 50%;
-}
-
-
-/* Voice area */
-
-.voice-area {
-
-    margin-top: 55px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 12px;
-}
-
-
-/* Talk button */
-
-#micButton {
-
-    border: 1px solid var(--main-color);
-
-    border-radius: 50px;
-
-    padding: 13px 28px;
-
-    background:
-        rgba(0, 0, 0, 0.6);
-
-    color: var(--main-color);
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 0 15px var(--main-color);
-
-    transition: 0.3s;
-}
-
-
-#micButton:hover {
-
-    transform: scale(1.05);
-
-    box-shadow:
-        0 0 30px var(--main-color);
-}
-
-
-#micButton:active {
-
-    transform: scale(0.95);
-}
-
-
-/* Status */
-
-#status {
-
-    color: #999;
-
-    font-size: 12px;
-
-    text-align: center;
-
-    min-height: 18px;
-}
-
-
-/* Animations */
-
-@keyframes rotateClockwise {
-
-    from {
-        transform: rotate(0deg);
+        return;
     }
 
-    to {
-        transform: rotate(360deg);
+
+    try {
+
+        recognition.start();
+
+    } catch (error) {
+
+        console.log(error);
+
     }
 }
 
 
-@keyframes rotateAnti {
+// ======================================
+// UNDERSTAND QUESTION
+// ======================================
 
-    from {
-        transform: rotate(360deg);
+function understandQuestion(question) {
+
+
+    // -------------------------------
+    // DATE
+    // -------------------------------
+
+    const dateWords = [
+
+        "date",
+
+        "tarikh",
+
+        "तारीख",
+
+        "तारिख",
+
+        "aaj ki date",
+
+        "aaj kya date",
+
+        "aaj ki tarikh",
+
+        "aaj kya tarikh",
+
+        "aaj ki tarik",
+
+        "aaj kya tarik",
+
+        "today date",
+
+        "today ki date",
+
+        "today kya date"
+
+    ];
+
+
+    if (
+        dateWords.some(word =>
+            question.includes(word)
+        )
+    ) {
+
+        speak(getCurrentDate());
+
+        return;
     }
 
-    to {
-        transform: rotate(0deg);
+
+    // -------------------------------
+    // DAY
+    // -------------------------------
+
+    const dayWords = [
+
+        "kaunsa din",
+
+        "kaun sa din",
+
+        "kon sa din",
+
+        "aaj ka din",
+
+        "aaj konsa din",
+
+        "aaj kaunsa din",
+
+        "which day",
+
+        "day kya hai",
+
+        "aaj kya din hai"
+
+    ];
+
+
+    if (
+        dayWords.some(word =>
+            question.includes(word)
+        )
+    ) {
+
+        speak(getCurrentDay());
+
+        return;
     }
+
+
+    // -------------------------------
+    // TIME
+    // -------------------------------
+
+    const timeWords = [
+
+        "time",
+
+        "kitne baje",
+
+        "kitna baj",
+
+        "kitne baj",
+
+        "samay",
+
+        "abhi kya time",
+
+        "abhi kitne baje",
+
+        "abhi kitna baj",
+
+        "what time"
+
+    ];
+
+
+    if (
+        timeWords.some(word =>
+            question.includes(word)
+        )
+    ) {
+
+        speak(getCurrentTime());
+
+        return;
+    }
+
+
+    // -------------------------------
+    // UNKNOWN
+    // -------------------------------
+
+    speak(
+        "Sorry, abhi main sirf time, date aur day ke questions ka answer de sakti hoon."
+    );
 }
 
 
-/* Small phones */
+// ======================================
+// GET CURRENT DATE
+// ======================================
 
-@media (max-width: 360px) {
+function getCurrentDate() {
 
-    .container {
-        padding: 12px;
-    }
+    const now = new Date();
 
-    .clock {
-        width: 88vw;
-    }
 
-    .day {
-        letter-spacing: 4px;
-    }
+    const months = [
 
-    .time {
-        letter-spacing: 1px;
-    }
+        "January",
 
-    .date {
-        letter-spacing: 2px;
-    }
+        "February",
+
+        "March",
+
+        "April",
+
+        "May",
+
+        "June",
+
+        "July",
+
+        "August",
+
+        "September",
+
+        "October",
+
+        "November",
+
+        "December"
+
+    ];
+
+
+    return `Aaj ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} hai.`;
 }
 
 
-/* Landscape mobile */
+// ======================================
+// GET CURRENT DAY
+// ======================================
 
-@media (max-height: 550px) {
+function getCurrentDay() {
 
-    .clock {
-        width: min(280px, 55vh);
+    const now = new Date();
+
+
+    const days = [
+
+        "Sunday",
+
+        "Monday",
+
+        "Tuesday",
+
+        "Wednesday",
+
+        "Thursday",
+
+        "Friday",
+
+        "Saturday"
+
+    ];
+
+
+    return `Aaj ${days[now.getDay()]} hai.`;
+}
+
+
+// ======================================
+// GET CURRENT TIME
+// ======================================
+
+function getCurrentTime() {
+
+    const now = new Date();
+
+
+    let hours =
+        now.getHours();
+
+    let minutes =
+        now.getMinutes();
+
+
+    const period =
+        hours >= 12 ? "PM" : "AM";
+
+
+    hours =
+        hours % 12;
+
+
+    if (hours === 0) {
+        hours = 12;
     }
 
-    .voice-area {
-        margin-top: 25px;
-    }
+
+    return `Abhi time ${hours}:${String(minutes).padStart(2, "0")} ${period} hai.`;
+}
+
+
+// ======================================
+// SPEAK
+// ======================================
+
+function speak(text) {
+
+    window.speechSynthesis.cancel();
+
+
+    const voice =
+        new SpeechSynthesisUtterance(text);
+
+
+    voice.lang = "hi-IN";
+
+    voice.rate = 0.95;
+
+    voice.pitch = 1;
+
+
+    window.speechSynthesis.speak(voice);
+
+
+    statusText.textContent =
+        text;
+
+
+    console.log(
+        "Clock:",
+        text
+    );
 }
